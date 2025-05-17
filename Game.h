@@ -12,7 +12,7 @@
 #include "Board.h"
 #include "Graphics.h"
 #include "Constants.h"
-#include "Player.h"
+#include "Player.h" // Point 结构体在此定义
 
 // 定义游戏状态枚举
 enum class GameState {
@@ -63,6 +63,8 @@ private:
     GameState currentState; // 当前游戏状态
     bool isFullscreen;   // 新增：跟踪游戏是否处于全屏模式
 
+    Point lastPlayedMove; // 新增：记录最后一次落子的位置
+
     // --- 玩家管理 ---
     std::array<std::unique_ptr<Player>, 3> players;
     std::array<AIDifficulty, 3> playerTypes;
@@ -77,7 +79,7 @@ private:
     SDL_FRect aboutBoxRect;
     SDL_FRect aboutBoxCloseButtonRect;
     bool isDraggingAboutBox;
-    SDL_Point dragOffset;
+    SDL_Point dragOffset; // SDL_Point for UI dragging, distinct from game's Point struct
     std::vector<std::string> rulesTextLines;
     std::vector<std::string> creditsTextLines;
     int aboutTextScrollOffsetY;
@@ -88,7 +90,7 @@ private:
     SDL_FRect taskLogBoxRect;
     SDL_FRect taskLogBoxCloseButtonRect;
     bool isDraggingTaskLogBox;
-    SDL_Point dragOffsetTaskLog;
+    SDL_Point dragOffsetTaskLog; // SDL_Point for UI dragging
     std::vector<std::string> taskLogTextLines;
     int taskLogTextScrollOffsetY;
     int totalTaskLogTextHeight;
@@ -105,13 +107,12 @@ private:
     void initializeTaskLogScreen();
 
     // 事件处理方法
-    void handleGlobalEvents(const SDL_Event& event); // 新增：处理全局事件如退出和全屏
+    void handleGlobalEvents(const SDL_Event& event);
     void handleMenuEvents(const SDL_Event& event);
     void handlePauseEvents(const SDL_Event& event);
     void handleGameEvents(const SDL_Event& event);
     void handleAboutScreenEvents(const SDL_Event& event);
     void handleTaskLogScreenEvents(const SDL_Event& event);
-    // void handleWindowEvents(const SDL_Event& event); // 可选，如果需要更细致的窗口事件处理
 
     // 游戏逻辑更新方法
     void update(int row, int col);
@@ -130,7 +131,7 @@ private:
     std::unique_ptr<Player> createPlayer(AIDifficulty type);
     void startNewGame(AIDifficulty p1Type, AIDifficulty p2Type);
 
-    void recalculateUIForNewSize(int newWidth, int newHeight); // 声明：窗口大小改变时重新计算UI的方法
+    void recalculateUIForNewSize(int newWidth, int newHeight);
 };
 
 #endif // GAME_H

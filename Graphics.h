@@ -5,7 +5,9 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <string>
 #include <vector>
-#include "Constants.h" // 确保Constants.h在此之前被包含或其内容在此可用
+#include "Constants.h" 
+#include "Player.h" // For Point struct
+
 class Board; // 前向声明
 
 class Graphics {
@@ -17,30 +19,27 @@ public:
 
     void clearScreen();
     void drawBoardGrid();
-    void drawPieces(const Board& board);
+    // 修改：增加 lastPlayedMove 参数用于高亮
+    void drawPieces(const Board& board, const Point& lastPlayedMove);
     void renderText(const std::string& text, int x, int y, SDL_Color color);
     void presentScreen();
     SDL_Renderer* getRenderer();
-    SDL_Window* getWindow(); // 新增：获取窗口指针，方便Game类操作
+    SDL_Window* getWindow(); 
     void setWindowTitle(const std::string& title);
-    SDL_Point getTextDimensions(const std::string& text);
+    SDL_Point getTextDimensions(const std::string& text); // SDL_Point for UI dimensions
     TTF_Font* getFont();
 
-    void toggleFullscreen(); // 新增：切换全屏模式的方法
+    void toggleFullscreen(); 
 
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     TTF_Font* font;
     bool initialized;
-    bool isCurrentlyFullscreen; // 新增：跟踪当前是否为全屏状态
-
-    // 存储原始窗口尺寸以便恢复 (如果需要更复杂的恢复逻辑)
-    // int originalWindowWidth;
-    // int originalWindowHeight;
-
+    bool isCurrentlyFullscreen; 
 
     bool loadFont();
+    // 保持 fillCircle 和 drawCircle 为私有辅助函数
     void fillCircle(int centerX, int centerY, int radius, SDL_Color color);
     void drawCircle(int centerX, int centerY, int radius, SDL_Color color);
 };

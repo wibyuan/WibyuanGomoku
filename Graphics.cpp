@@ -4,8 +4,10 @@
 #include "Graphics.h"
 #include "Constants.h"
 #include "Board.h" // Graphics::drawPieces 需要 Board 定义
+#include "Player.h" // For Point struct
 #include <iostream>
 #include <cstring>      // 为了 strlen
+#include <cmath>        // 为了 M_PI 和 round
 
 // 构造函数: 初始化所有图形相关的子系统和资源
 Graphics::Graphics() : window(nullptr), renderer(nullptr), font(nullptr), initialized(false), isCurrentlyFullscreen(false) {
@@ -17,7 +19,7 @@ Graphics::Graphics() : window(nullptr), renderer(nullptr), font(nullptr), initia
 
     // 2. 初始化 SDL_ttf
     if (TTF_Init() == -1) {
-        std::cerr << "图形错误: SDL_ttf 初始化失败! Error: " << SDL_GetError() << std::endl;
+        std::cerr << "图形错误: SDL_ttf 初始化失败! Error: " << SDL_GetError() << std::endl; 
         SDL_Quit();
         return;
     }
@@ -44,16 +46,11 @@ Graphics::Graphics() : window(nullptr), renderer(nullptr), font(nullptr), initia
          return;
     }
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-
-    // !!! 关键: 设置渲染器的逻辑演示区域 !!!
-    if (SDL_SetRenderLogicalPresentation(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX) != 0) {
+    /*
+    if (SDL_SetRenderLogicalPresentation(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX, SDL_SCALEMODE_LINEAR) != 0) {
         std::cerr << "图形警告: 设置渲染器逻辑演示区域失败! SDL_Error: " << SDL_GetError() << std::endl;
     }
-    // 可选：单独设置缩放模式。例如，若希望平滑缩放而不是像素化缩放：
-    // if (SDL_SetRenderScaleMode(renderer, SDL_SCALEMODE_LINEAR) != 0) { // 或 SDL_SCALEMODE_NEAREST
-    //    std::cerr << "图形警告: 设置渲染器缩放模式失败! SDL_Error: " << SDL_GetError() << std::endl;
-    // }
-
+    */
 
     // 5. 加载字体
     if (!loadFont()) {
@@ -91,7 +88,7 @@ bool Graphics::isInitialized() const {
 
 // 加载字体
 bool Graphics::loadFont() {
-    #if defined(FONT_INDEX)// 这段后面极其不可能执行
+    #if defined(FONT_INDEX) // 这段后面极其不可能执行
         font = TTF_OpenFontIndex(FONT_PATH, FONT_SIZE, FONT_INDEX);
         if (font == nullptr) {
             std::cerr << "[调试] 加载字体 '" << FONT_PATH << "' (索引 " << FONT_INDEX << ") 失败! Error: " << SDL_GetError() << std::endl;
@@ -119,14 +116,14 @@ void Graphics::setWindowTitle(const std::string& title) {
 // 清屏
 void Graphics::clearScreen() {
     if (!renderer) return;
-    SDL_SetRenderDrawColor(renderer, 245, 222, 179, SDL_ALPHA_OPAQUE); // 米黄色背景
+    SDL_SetRenderDrawColor(renderer, 245, 222, 179, SDL_ALPHA_OPAQUE); 
     SDL_RenderClear(renderer);
 }
 
 // 绘制棋盘网格和标记点
 void Graphics::drawBoardGrid() {
     if (!renderer) return;
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE); // 黑色线条
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE); 
     for (int i = 0; i < BOARD_ROWS; ++i) {
         SDL_RenderLine(renderer, BORDER_PADDING, BORDER_PADDING + i * CELL_SIZE, BORDER_PADDING + (BOARD_COLS - 1) * CELL_SIZE, BORDER_PADDING + i * CELL_SIZE);
     }
@@ -136,7 +133,7 @@ void Graphics::drawBoardGrid() {
     int center_row = (BOARD_ROWS -1) / 2;
     int center_col = (BOARD_COLS -1) / 2;
     int star_offset = 3;
-    SDL_Point star_points_indices[] = {
+    SDL_Point star_points_indices[] = { 
         {center_col, center_row}, {star_offset, star_offset}, {BOARD_COLS - 1 - star_offset, star_offset},
         {star_offset, BOARD_ROWS - 1 - star_offset}, {BOARD_COLS - 1 - star_offset, BOARD_ROWS - 1 - star_offset}
     };
@@ -146,19 +143,30 @@ void Graphics::drawBoardGrid() {
     }
 }
 
-// 绘制棋子
-void Graphics::drawPieces(const Board& board_ref) {
+// 绘制棋子 (增加 lastPlayedMove 参数)
+void Graphics::drawPieces(const Board& board_ref, const Point& lastPlayedMove) {
     if (!renderer) return;
+    SDL_Color highlightColor = {255, 0, 0, 255}; 
+    int highlightRadiusOuter = PIECE_RADIUS + 1; 
+
     for (int r = 0; r < BOARD_ROWS; ++r) {
         for (int c = 0; c < BOARD_COLS; ++c) {
             int piece = board_ref.getPiece(r, c);
             if (piece != EMPTY_PIECE) {
-                SDL_Color pieceColor = (piece == BLACK_PIECE) ? SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE} : SDL_Color{255, 255, 255, SDL_ALPHA_OPAQUE};
+                SDL_Color pieceColor = (piece == BLACK_PIECE) ? 
+                                       SDL_Color{0, 0, 0, SDL_ALPHA_OPAQUE} :
+                                       SDL_Color{255, 255, 255, SDL_ALPHA_OPAQUE};
                 int centerX = BORDER_PADDING + c * CELL_SIZE;
                 int centerY = BORDER_PADDING + r * CELL_SIZE;
+                
                 fillCircle(centerX, centerY, PIECE_RADIUS, pieceColor);
-                if (piece == WHITE_PIECE) { // 白子加黑色边框
+
+                if (piece == WHITE_PIECE) { 
                     drawCircle(centerX, centerY, PIECE_RADIUS, {0, 0, 0, SDL_ALPHA_OPAQUE});
+                }
+
+                if (r == lastPlayedMove.row && c == lastPlayedMove.col) {
+                    drawCircle(centerX, centerY, highlightRadiusOuter, highlightColor);
                 }
             }
         }
@@ -167,11 +175,16 @@ void Graphics::drawPieces(const Board& board_ref) {
 
 // 渲染文本
 void Graphics::renderText(const std::string& text, int x, int y, SDL_Color fgColor) {
-    if (!renderer || !font) return;
+    if (!renderer || !font || text.empty()) { 
+        if (!font) std::cerr << "[错误] renderText 调用时字体未加载。" << std::endl;
+        return;
+    }
     const char* text_cstr = text.c_str();
-    size_t text_length = strlen(text_cstr); // 根据编译器反馈，此版本TTF_RenderText_Blended需要长度
+    
 
-    SDL_Surface* textSurface = TTF_RenderText_Blended(font, text_cstr, text_length, fgColor);
+    size_t text_length = strlen(text_cstr); 
+    SDL_Surface* textSurface = TTF_RenderText_Blended(font, text_cstr, text_length, fgColor); 
+    
     if (textSurface == nullptr) {
         std::cerr << "[错误] TTF_RenderText_Blended 失败! Error: " << SDL_GetError() << std::endl;
         return;
@@ -195,26 +208,30 @@ void Graphics::renderText(const std::string& text, int x, int y, SDL_Color fgCol
 
 // 获取文本渲染后的尺寸
 SDL_Point Graphics::getTextDimensions(const std::string& text) {
-    SDL_Point dimensions = {0, 0};
+    SDL_Point dimensions = {0, 0}; 
     if (!this->font || text.empty()) {
         if (!this->font) std::cerr << "[错误] getTextDimensions 调用时字体未加载。" << std::endl;
         return dimensions;
     }
     const char* text_cstr = text.c_str();
-    size_t text_length = strlen(text_cstr);
+
     SDL_Color tempColor = {0,0,0,0}; 
+    size_t text_length = strlen(text_cstr);
     SDL_Surface* tempSurface = TTF_RenderText_Blended(font, text_cstr, text_length, tempColor);
+
     if (tempSurface) {
         dimensions.x = tempSurface->w;
         dimensions.y = tempSurface->h;
         SDL_DestroySurface(tempSurface);
     } else {
+        // 根据编译器错误，TTF_GetError 未定义，尝试使用 SDL_GetError
         std::cerr << "[警告] getTextDimensions 通过渲染临时表面失败: " << SDL_GetError() << std::endl;
-        dimensions.x = static_cast<int>(text.length() * FONT_SIZE * 0.6);
+        dimensions.x = static_cast<int>(text.length() * FONT_SIZE * 0.6); 
         dimensions.y = FONT_SIZE;
     }
     return dimensions;
 }
+
 
 TTF_Font* Graphics::getFont() {
     return this->font;
@@ -237,7 +254,6 @@ SDL_Window* Graphics::getWindow() {
 void Graphics::toggleFullscreen() {
     if (!window) return;
     if (isCurrentlyFullscreen) {
-        // 由于 SDL_ENABLE_OLD_NAMES 已定义, SDL_FALSE 会被替换为 C++ 的 false
         if (SDL_SetWindowFullscreen(window, SDL_FALSE) != 0) { 
             std::cerr << "图形错误: 切换回窗口模式失败! SDL_Error: " << SDL_GetError() << std::endl;
         } else {
@@ -245,7 +261,6 @@ void Graphics::toggleFullscreen() {
             std::cout << "[调试] 已切换到窗口模式。" << std::endl;
         }
     } else {
-        // 由于 SDL_ENABLE_OLD_NAMES 已定义, SDL_TRUE 会被替换为 C++ 的 true
         if (SDL_SetWindowFullscreen(window, SDL_TRUE) != 0) { 
             std::cerr << "图形错误: 切换到全屏模式失败! SDL_Error: " << SDL_GetError() << std::endl;
         } else {
@@ -273,9 +288,9 @@ void Graphics::drawCircle(int centerX, int centerY, int radius, SDL_Color color)
     if (!renderer) return;
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     for (int angle_deg = 0; angle_deg < 360; ++angle_deg) {
-        double angle_rad = angle_deg * (3.1415926535 / 180.0);
-        int x = centerX + static_cast<int>(radius * SDL_cos(angle_rad));
-        int y = centerY + static_cast<int>(radius * SDL_sin(angle_rad));
+        double angle_rad = angle_deg * (M_PI / 180.0); 
+        int x = centerX + static_cast<int>(round(radius * SDL_cos(angle_rad))); 
+        int y = centerY + static_cast<int>(round(radius * SDL_sin(angle_rad)));
         SDL_RenderPoint(renderer, x, y);
     }
 }

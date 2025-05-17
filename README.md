@@ -13,14 +13,14 @@
 * 游戏暂停与继续 (快捷键: ESC 或 P键，在游戏中)
 * “关于”界面（包含游戏规则和致谢）
 * “更新日志”界面，展示版本迭代信息
-* 最新落子高亮显示
-* 人机对战时显示当前回合方
+* 最新落子高亮显示（5.17）
+* 人机对战时显示当前回合方（to do）
 
 ## 截图
 
-![img](https://pic1.zhimg.com/80/v2-c9f0bf781712db4526e6d3020325b1ad_1440w.png)
+![img](https://picx.zhimg.com/80/v2-25881c952326cd91d945f8a897246d32_1440w.png)
 
-![img](https://picx.zhimg.com/80/v2-8c5eb5634ec0b494f2601bafbf013a39_1440w.png)
+![img](https://pica.zhimg.com/80/v2-24b5e9aca3f68fa62b65bf572531e4c3_1440w.png)
 
 ## 如何编译与运行
 
