@@ -3,8 +3,8 @@
 
 #include "Graphics.h"
 #include "Constants.h"
-#include "Board.h" // Graphics::drawPieces 需要 Board 定义
-#include "Player.h" // For Point struct
+#include "Board.h" 
+#include "Player.h" 
 #include <iostream>
 #include <cstring>      // 为了 strlen
 #include <cmath>        // 为了 M_PI 和 round
@@ -19,7 +19,7 @@ Graphics::Graphics() : window(nullptr), renderer(nullptr), font(nullptr), initia
 
     // 2. 初始化 SDL_ttf
     if (TTF_Init() == -1) {
-        std::cerr << "图形错误: SDL_ttf 初始化失败! Error: " << SDL_GetError() << std::endl; 
+        std::cerr << "图形错误: SDL_ttf 初始化失败! Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
         return;
     }
@@ -46,11 +46,16 @@ Graphics::Graphics() : window(nullptr), renderer(nullptr), font(nullptr), initia
          return;
     }
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-    /*
-    if (SDL_SetRenderLogicalPresentation(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX, SDL_SCALEMODE_LINEAR) != 0) {
+
+    // !!! 关键: 设置渲染器的逻辑演示区域 !!!
+    if (SDL_SetRenderLogicalPresentation(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX) != 0) {
         std::cerr << "图形警告: 设置渲染器逻辑演示区域失败! SDL_Error: " << SDL_GetError() << std::endl;
     }
-    */
+    // 可选：单独设置缩放模式。例如，若希望平滑缩放而不是像素化缩放：
+    // if (SDL_SetRenderScaleMode(renderer, SDL_SCALEMODE_LINEAR) != 0) { // 或 SDL_SCALEMODE_NEAREST
+    //    std::cerr << "图形警告: 设置渲染器缩放模式失败! SDL_Error: " << SDL_GetError() << std::endl;
+    // }
+
 
     // 5. 加载字体
     if (!loadFont()) {
@@ -88,17 +93,18 @@ bool Graphics::isInitialized() const {
 
 // 加载字体
 bool Graphics::loadFont() {
-    #if defined(FONT_INDEX) // 这段后面极其不可能执行
+    // 与您原始代码一致的字体加载方式
+    #if defined(FONT_INDEX) 
         font = TTF_OpenFontIndex(FONT_PATH, FONT_SIZE, FONT_INDEX);
         if (font == nullptr) {
-            std::cerr << "[调试] 加载字体 '" << FONT_PATH << "' (索引 " << FONT_INDEX << ") 失败! Error: " << SDL_GetError() << std::endl;
+            std::cerr << "[调试] 加载字体 '" << FONT_PATH << "' (索引 " << FONT_INDEX << ") 失败! Error: " << SDL_GetError() << std::endl; // 使用 SDL_GetError
             return false;
         }
         std::cout << "[调试] 字体 '" << FONT_PATH << "' (索引 " << FONT_INDEX << ") 加载成功。" << std::endl;
     #else
         font = TTF_OpenFont(FONT_PATH, FONT_SIZE);
         if (font == nullptr) {
-            std::cerr << "[调试] 加载字体 '" << FONT_PATH << "' 失败! Error: " << SDL_GetError() << std::endl;
+            std::cerr << "[调试] 加载字体 '" << FONT_PATH << "' 失败! Error: " << SDL_GetError() << std::endl; // 使用 SDL_GetError
             return false;
         }
         std::cout << "[调试] 字体 '" << FONT_PATH << "' 加载成功。" << std::endl;
@@ -147,7 +153,7 @@ void Graphics::drawBoardGrid() {
 void Graphics::drawPieces(const Board& board_ref, const Point& lastPlayedMove) {
     if (!renderer) return;
     SDL_Color highlightColor = {255, 0, 0, 255}; 
-    int highlightRadiusOuter = PIECE_RADIUS + 1; 
+    int highlightRadiusOuter = PIECE_RADIUS + 2; 
 
     for (int r = 0; r < BOARD_ROWS; ++r) {
         for (int c = 0; c < BOARD_COLS; ++c) {
@@ -159,15 +165,21 @@ void Graphics::drawPieces(const Board& board_ref, const Point& lastPlayedMove) {
                 int centerX = BORDER_PADDING + c * CELL_SIZE;
                 int centerY = BORDER_PADDING + r * CELL_SIZE;
                 
+
+                // 如果当前坐标是最后落子的位置，则绘制高亮圆圈 
+                bool tmp_flag = 0;
+
+                if (r == lastPlayedMove.row && c == lastPlayedMove.col) {
+                    fillCircle(centerX, centerY, highlightRadiusOuter, highlightColor);
+                    tmp_flag = 1;
+                }
+                
                 fillCircle(centerX, centerY, PIECE_RADIUS, pieceColor);
 
-                if (piece == WHITE_PIECE) { 
+                if (piece == WHITE_PIECE && !tmp_flag) { 
                     drawCircle(centerX, centerY, PIECE_RADIUS, {0, 0, 0, SDL_ALPHA_OPAQUE});
                 }
 
-                if (r == lastPlayedMove.row && c == lastPlayedMove.col) {
-                    drawCircle(centerX, centerY, highlightRadiusOuter, highlightColor);
-                }
             }
         }
     }
@@ -181,12 +193,13 @@ void Graphics::renderText(const std::string& text, int x, int y, SDL_Color fgCol
     }
     const char* text_cstr = text.c_str();
     
-
+    // 严格按照您编译器提示的 SDL_ttf.h 中的定义：
+    // SDL_Surface* TTF_RenderText_Blended(TTF_Font*, const char*, size_t, SDL_Color)
     size_t text_length = strlen(text_cstr); 
     SDL_Surface* textSurface = TTF_RenderText_Blended(font, text_cstr, text_length, fgColor); 
     
     if (textSurface == nullptr) {
-        std::cerr << "[错误] TTF_RenderText_Blended 失败! Error: " << SDL_GetError() << std::endl;
+        std::cerr << "[错误] TTF_RenderText_Blended 失败! Error: " << SDL_GetError() << std::endl; // 使用 SDL_GetError
         return;
     }
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
@@ -215,7 +228,8 @@ SDL_Point Graphics::getTextDimensions(const std::string& text) {
     }
     const char* text_cstr = text.c_str();
 
-    SDL_Color tempColor = {0,0,0,0}; 
+    // 使用与 renderText 一致的 TTF_RenderText_Blended 调用方式 (4参数)
+    SDL_Color tempColor = {0,0,0,0}; // 颜色不重要，只是为了获取尺寸
     size_t text_length = strlen(text_cstr);
     SDL_Surface* tempSurface = TTF_RenderText_Blended(font, text_cstr, text_length, tempColor);
 
@@ -224,8 +238,7 @@ SDL_Point Graphics::getTextDimensions(const std::string& text) {
         dimensions.y = tempSurface->h;
         SDL_DestroySurface(tempSurface);
     } else {
-        // 根据编译器错误，TTF_GetError 未定义，尝试使用 SDL_GetError
-        std::cerr << "[警告] getTextDimensions 通过渲染临时表面失败: " << SDL_GetError() << std::endl;
+        std::cerr << "[警告] getTextDimensions 通过渲染临时表面失败: " << SDL_GetError() << std::endl; // 使用 SDL_GetError
         dimensions.x = static_cast<int>(text.length() * FONT_SIZE * 0.6); 
         dimensions.y = FONT_SIZE;
     }
