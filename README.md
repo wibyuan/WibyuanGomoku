@@ -20,7 +20,7 @@
 
 ![img](https://picx.zhimg.com/80/v2-25881c952326cd91d945f8a897246d32_1440w.png)
 
-![img](https://pica.zhimg.com/80/v2-24b5e9aca3f68fa62b65bf572531e4c3_1440w.png)
+![img](https://picx.zhimg.com/80/v2-40ce01462da001147618f73074629b71_1440w.png)
 
 ## 如何编译与运行
 
