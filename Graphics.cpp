@@ -93,7 +93,6 @@ bool Graphics::isInitialized() const {
 
 // 加载字体
 bool Graphics::loadFont() {
-    // 与您原始代码一致的字体加载方式
     #if defined(FONT_INDEX) 
         font = TTF_OpenFontIndex(FONT_PATH, FONT_SIZE, FONT_INDEX);
         if (font == nullptr) {
@@ -193,7 +192,6 @@ void Graphics::renderText(const std::string& text, int x, int y, SDL_Color fgCol
     }
     const char* text_cstr = text.c_str();
     
-    // 严格按照您编译器提示的 SDL_ttf.h 中的定义：
     // SDL_Surface* TTF_RenderText_Blended(TTF_Font*, const char*, size_t, SDL_Color)
     size_t text_length = strlen(text_cstr); 
     SDL_Surface* textSurface = TTF_RenderText_Blended(font, text_cstr, text_length, fgColor); 
