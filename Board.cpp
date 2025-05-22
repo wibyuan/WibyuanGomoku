@@ -1,4 +1,6 @@
 #include "Board.h" // 包含对应的头文件
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include <vector> // 确保包含 vector
 
 // 构造函数: 初始化棋盘网格

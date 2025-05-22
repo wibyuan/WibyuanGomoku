@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
-
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include <vector>
 #include "Constants.h" // 包含常量定义
 

@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "GreedyAI.h"
 #include <algorithm> // 用于 std::fill, std::max
 #include <limits>    // 用于 std::numeric_limits

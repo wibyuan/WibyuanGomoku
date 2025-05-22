@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "Constants.h" // 包含头文件以确保声明与定义匹配
 
 // --- 提供常量的实际定义 ---
@@ -15,7 +17,7 @@ const int SCREEN_WIDTH = BOARD_COLS * CELL_SIZE + 2 * BORDER_PADDING;
 const int SCREEN_HEIGHT = BOARD_ROWS * CELL_SIZE + 2 * BORDER_PADDING;
 
 // 字体常量
-const char* FONT_PATH = "msyh.ttc"; // 使用支持中文的字体，微软雅黑
+const char* FONT_PATH = "NotoSansSC-Regular.ttf"; // 使用支持中文的开源字体，思源黑体
 const int FONT_SIZE = 28;           
 
 // 玩家定义

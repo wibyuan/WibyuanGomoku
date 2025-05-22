@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 // 在所有 #include 之前定义 SDL_ENABLE_OLD_NAMES
 #define SDL_ENABLE_OLD_NAMES 
 

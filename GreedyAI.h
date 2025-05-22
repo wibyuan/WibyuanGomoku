@@ -1,6 +1,7 @@
 #ifndef GREEDYAI_H
 #define GREEDYAI_H
-
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "Player.h"    // 继承自 Player 基类
 #include "Board.h"     // AI 需要与 Board 对象交互
 #include "Constants.h" // 包含棋盘大小、棋子颜色等常量

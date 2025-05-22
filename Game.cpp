@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "Game.h"
 #include "Constants.h"
 #include "GreedyAI.h"

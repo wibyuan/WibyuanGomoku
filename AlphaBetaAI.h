@@ -1,5 +1,7 @@
 #ifndef ALPHABETAAI_H
 #define ALPHABETAAI_H
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 
 #include "Player.h"
 #include "Board.h"

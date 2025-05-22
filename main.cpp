@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "Game.h" // 包含我们的游戏主类头文件
 #include <SDL3/SDL_main.h> // 包含 SDL 的 main 宏定义 (如果需要)
 #include <iostream> // 用于错误输出

@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "Board.h" // 需要 Board 类定义
 
 // 结构体，用于表示棋盘上的一个点或一步棋

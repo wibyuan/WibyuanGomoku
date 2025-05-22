@@ -30,7 +30,7 @@
 * CMake (建议版本 3.10 或更高)
 * SDL3 开发库
 * SDL3_ttf 开发库
-* 字体文件：`msyh.ttc` (微软雅黑，用于显示中文)
+* 字体文件：`NotoSansSC-Regular.ttf` (思源黑体，用于显示中文)
 
 ### 构建步骤 (以 MinGW 为例)
 
@@ -95,7 +95,7 @@
     要运行游戏，您需要将以下文件复制到与可执行文件**相同的目录**下：
     * `SDL3.dll` (来自您配置的 SDL3 开发库的 `bin` 目录)
     * `SDL3_ttf.dll` (来自您配置的 SDL3_ttf 开发库的 `bin` 目录)
-    * `msyh.ttc` (字体文件，您需要将其放在与可执行文件同级，或者修改 `Constants.cpp` 中的 `FONT_PATH` 指向其正确位置)
+    * `NotoSansSC-Regular.ttf`  (思源黑体，您需要将其放在与可执行文件同级，或者修改 `Constants.cpp` 中的 `FONT_PATH` 指向其正确位置)
     * 可能的 MinGW 运行时 DLL（如果您的编译器是动态链接运行时的，例如 `libgcc_s_seh-1.dll`, `libstdc++-6.dll`, `libwinpthread-1.dll`）。
     * `zlib1.dll` (通常是 SDL_ttf 的依赖，也需要从 SDL_ttf 或其依赖的 FreeType 的 `bin` 目录获取)。
 
@@ -121,6 +121,16 @@
 * AI 与代码协助: Gemini (Google)
 * 使用的库: SDL3, SDL3_ttf (SDL_ttf 内部使用了 FreeType 和 HarfBuzz 等库进行字体渲染)
 
-## 许可证
+## 许可和归属
 
 本项目采用 **MIT License** 许可证。详情请参阅项目中的 `LICENSE` 文件：[LICENSE](https://github.com/wibyuan/WibyuanGomoku/blob/main/LICENSE)
+
+
+### 第三方库和资源许可证
+
+本游戏使用了以下第三方库和资源。请注意遵守它们的各自许可条款：
+
+*   **SDL3 库**: 采用 [zlib License](https://github.com/libsdl-org/SDL/blob/main/LICENSE.txt)。其完整的许可证文本已包含在本项目 `THIRD_PARTY_LICENSES/SDL3_LICENSE` 文件中。
+*   **SDL3_ttf 库**: 采用 [zlib License](https://github.com/libsdl-org/SDL_ttf/blob/main/LICENSE.txt)。SDL3_ttf 内部使用了 FreeType 和 HarfBuzz 等库进行字体渲染，它们的许可证信息也已包含在本项目 `THIRD_PARTY_LICENSES/SDL3_ttf_LICENSE` 文件中。
+*   **字体文件**:
+    本游戏使用 **思源黑体 (Noto Sans CJK / Source Han Sans)** 作为主要显示字体。思源黑体由 Google 和 Adobe 联合开发，采用 **SIL Open Font License (OFL)** 许可证。其完整的许可证文本已包含在本项目 `THIRD_PARTY_LICENSES/OFL_NotoSansCJK_LICENSE` 文件中。

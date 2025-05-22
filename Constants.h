@@ -1,5 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 
 // --- 使用 extern 声明常量 (定义将在 Constants.cpp 中) ---
 

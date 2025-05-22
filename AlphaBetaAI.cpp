@@ -1,3 +1,5 @@
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 #include "AlphaBetaAI.h" // 头文件
 #include <numeric>        // 用于 std::iota
 #include <algorithm>      // 用于 std::sort, std::max, std::min, std::fill

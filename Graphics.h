@@ -1,5 +1,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
+// Copyright (c) 2025 wibyuan
+// Licensed under the MIT License (see LICENSE for details)
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
